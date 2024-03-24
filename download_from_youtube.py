@@ -65,6 +65,10 @@ def download_youtube_video_and_subtitles(video_url, path):
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(json_formatted)
         
+        # TODO: Make different names for manual and generated subtitles
+        # transcript_list.find_manually_created_transcript(['de', 'en']) 
+        # transcript_list.find_generated_transcript(['de', 'en'])
+
         print(f'Downloaded {file_path}, amount of lines: {len(text)}')
 
 
