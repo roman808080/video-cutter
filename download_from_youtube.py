@@ -64,6 +64,8 @@ def download_youtube_video_and_subtitles(video_url, path):
 
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(json_formatted)
+        
+        print(f'Downloaded {file_path}, amount of lines: {len(text)}')
 
 
 def main():
