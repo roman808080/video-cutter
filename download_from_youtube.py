@@ -89,7 +89,7 @@ def download_subtitles(video_url, path):
 def main():
     parser = argparse.ArgumentParser(description='Download videos and subtiles from YouTube.')
 
-    download_options = ['all', 'video', 'subtitles']
+    download_options = ['all', 'video', 'subtitles'] # TODO: Add a dictionary
 
     # Add the -l/--link argument
     parser.add_argument('-l', '--link', help='The link to the video', required=True)
