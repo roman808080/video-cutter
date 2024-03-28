@@ -89,8 +89,13 @@ def download_subtitles(video_url, path):
 def main():
     parser = argparse.ArgumentParser(description='Download videos and subtiles from YouTube.')
 
+    download_options = ['all', 'video', 'subtitles']
+
     # Add the -l/--link argument
     parser.add_argument('-l', '--link', help='The link to the video', required=True)
+    parser.add_argument('-d', '--download', choices=download_options,
+                        default=download_options[0],
+                        help='Downloading all, video, subtitles')
 
     # Parse the arguments
     args = parser.parse_args()
@@ -98,8 +103,15 @@ def main():
     output_dir = 'youtube_output_dir'
     os.makedirs(output_dir, exist_ok=True)
 
-    download_youtube_video(video_url=args.link, path=output_dir)
-    download_subtitles(video_url=args.link, path=output_dir)
+    if args.download == download_options[0]:
+        download_youtube_video(video_url=args.link, path=output_dir)
+        download_subtitles(video_url=args.link, path=output_dir)
+
+    elif args.download == download_options[1]:
+        download_youtube_video(video_url=args.link, path=output_dir)
+
+    elif args.download == download_options[2]:
+        download_subtitles(video_url=args.link, path=output_dir)
 
 
 if __name__ == "__main__":
