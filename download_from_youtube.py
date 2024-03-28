@@ -12,6 +12,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import JSONFormatter
 
 
+DEFAULT_SOURCE_LANGUAGE = 'en'
+
+
 def get_youtube_video_id(url):
     """
     Extracts the YouTube video ID from a given URL.
@@ -93,6 +96,10 @@ def main():
 
     # Add the -l/--link argument
     parser.add_argument('-l', '--link', help='The link to the video', required=True)
+
+    parser.add_argument('--source-language', help='The name of the source language', default=DEFAULT_SOURCE_LANGUAGE)
+    parser.add_argument('--target-language', help='The name of the target language', default=DEFAULT_SOURCE_LANGUAGE)
+
     parser.add_argument('-d', '--download', choices=download_options,
                         default=download_options[0],
                         help='Downloading all, video, subtitles')
