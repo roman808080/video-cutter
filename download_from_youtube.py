@@ -38,7 +38,16 @@ def remove_mp4_suffix(file_name):
     return file_name
 
 
-def download_youtube_video_and_subtitles(video_url, path):
+def get_stream(url):
+    yt = YouTube(url)
+    return yt.streams.get_highest_resolution()
+
+
+def get_video_name(url):
+    return get_stream(url).default_filename
+
+
+def download_youtube_video(video_url, path):
     """
     Downloads a video and all its subtitles from YouTube.
     
@@ -46,19 +55,21 @@ def download_youtube_video_and_subtitles(video_url, path):
     - video_url: str. The URL of the YouTube video.
     - path: str. The directory path to save the video and subtitles.
     """
-    yt = YouTube(video_url)
-    
+
     # Download video
-    print(f"Downloading video: {yt.title}")
-    stream = yt.streams.get_highest_resolution()
+    stream = get_stream(url=video_url)
+    print(f"Downloading video: {stream.title}")
     stream.download(output_path=path)
     print(f"Video downloaded successfully: {stream.default_filename}")
 
+
+def download_subtitles(video_url, path):
     video_id = get_youtube_video_id(url=video_url)
     transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+    video_name = get_video_name(url=video_url)
 
     for transcript in transcript_list:
-        youtube_video_name = remove_mp4_suffix(file_name=stream.default_filename)
+        youtube_video_name = remove_mp4_suffix(file_name=video_name)
         file_name = f'{youtube_video_name} ({transcript.language_code}).json'
         if transcript.is_generated:
             file_name = f'{youtube_video_name} ({transcript.language_code}, gen).json'
@@ -87,7 +98,8 @@ def main():
     output_dir = 'youtube_output_dir'
     os.makedirs(output_dir, exist_ok=True)
 
-    download_youtube_video_and_subtitles(video_url=args.link, path=output_dir)
+    download_youtube_video(video_url=args.link, path=output_dir)
+    download_subtitles(video_url=args.link, path=output_dir)
 
 
 if __name__ == "__main__":
