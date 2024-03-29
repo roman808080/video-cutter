@@ -48,7 +48,7 @@ def main():
     # Parse the arguments
     args = parser.parse_args()
 
-    split_audio(path_to_mp3=args.mp3, path_to_subtitles=args.subtitles)
+    split_audio(path_to_mp3=args.audio, path_to_subtitles=args.subtitles)
 
 if __name__ == "__main__":
     main()
