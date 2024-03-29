@@ -1,2 +1,6 @@
 pytube
 youtube-transcript-api
+moviepy
+pyqt5
+pyqtwebengine
+
