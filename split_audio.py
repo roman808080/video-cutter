@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import logging
 import argparse
 
 from moviepy.editor import AudioFileClip
@@ -29,13 +30,15 @@ def split_audio(path_to_mp3, path_to_subtitles):
         # Write the audio segment to a file
         audio_segment.write_audiofile(segment_filename, logger=None)  # logger=None to suppress the progress bar
 
-        print(f"Segment {segment_filename} has been created.")
+        logging.info(f"Segment {segment_filename} has been created.")
 
     # Close the original audio clip to release resources
     audio_clip.close()
 
 
 def main():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
     parser = argparse.ArgumentParser(description='Split audio into chunks')
 
     # the video should be first converted to audio by using:
