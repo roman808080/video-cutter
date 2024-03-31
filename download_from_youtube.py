@@ -3,6 +3,7 @@
 import os
 import sys
 import shutil
+import logging
 import argparse
 
 from urllib.parse import urlparse, parse_qs
@@ -61,9 +62,10 @@ def download_youtube_video(video_url, path):
 
     # Download video
     stream = get_stream(url=video_url)
-    print(f"Downloading video: {stream.title}")
+
+    logging.info(f"Downloading video: {stream.title}")
     stream.download(output_path=path)
-    print(f"Video downloaded successfully: {stream.default_filename}")
+    logging.info(f"Video downloaded successfully: {stream.default_filename}")
 
 
 def download_subtitles(video_url, path):
@@ -86,10 +88,11 @@ def download_subtitles(video_url, path):
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(json_formatted)
 
-        print(f'Downloaded {file_path}, amount of lines: {len(text)}')
+        logging.info(f'Downloaded {file_path}, amount of lines: {len(text)}')
 
 
 def main():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     parser = argparse.ArgumentParser(description='Download videos and subtiles from YouTube.')
 
     download_options = ['all', 'video', 'subtitles'] # TODO: Add a dictionary
