@@ -7,9 +7,12 @@ from anki_utlis import generate_id
 
 
 COURSE_INFO = 'course-info.json'
+COURSE_INFO = 'lesson-info.json'
 DEFAULT_INDENT = 4
 
 
+# A structure of a course:
+#
 # course_dir/
 #   course-info.json
 #
@@ -31,12 +34,16 @@ DEFAULT_INDENT = 4
 #         phrase_999.mp3
 
 
-def create_course(course_name, course_path=None):
+def create_course(course_name, course_path, link=None,
+                  description=''):
+
     model_id = generate_id()
     deck_id = generate_id()
 
     course_structure = {
         'name': course_name,
+        'description': description,
+
         'lessons': [
             # {
                 # 'name': '<name>',
@@ -45,10 +52,14 @@ def create_course(course_name, course_path=None):
                 # 'audio_config_path': '<path>',
             # },
         ],
+
         'anki': {
             'model_id': model_id,
             'deck_id': deck_id,
         },
+
+        'link': link,
+        'sub_courses': [],
     }
 
     os.makedirs(course_path, exist_ok=True)
@@ -56,6 +67,36 @@ def create_course(course_name, course_path=None):
 
     with open(info_file_path, 'w') as json_file:
         json.dump(course_structure, json_file, indent=DEFAULT_INDENT)
+
+
+def create_lesson(lesson_name, lesson_number, source_language,
+                  target_language, lesson_path, link=None,
+                  description=''):
+
+    lesson_structure = {
+        'name': lesson_name,
+        'number': number,
+        'description': description,
+
+        'source_language': source_language,
+        'target_language': target_language,
+
+        'phrases': [
+            # {
+                # 'source': '<phrase-in-source-language>',
+                # 'target': '<phrase-in-target-language>',
+
+                # 'source_audio': 'path-to-source-audio'
+                # 'target_audio': 'path-to-target-audio'
+
+                # 'comment': '<some-comment-regarding-the-prase>'
+            # },
+        ],
+
+        'link': link,
+        'sub_lessons': [],
+    }
+
 
 def main():
     parser = argparse.ArgumentParser(description='This script creates an empty course.')
