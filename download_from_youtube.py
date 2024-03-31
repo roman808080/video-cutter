@@ -107,10 +107,16 @@ def main():
                         default=download_options[0],
                         help='Downloading all, video, subtitles')
 
+    parser.add_argument('-p', '--path', help='The path to the output folder')
+
     # Parse the arguments
     args = parser.parse_args()
 
     output_dir = 'youtube_output_dir'
+    if args.path is not None:
+        output_dir = args.path
+    
+    # Make sure that the folder exists
     os.makedirs(output_dir, exist_ok=True)
 
     if args.download == download_options[0]:
