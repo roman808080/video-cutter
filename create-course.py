@@ -15,6 +15,8 @@ DEFAULT_INDENT = 4
 #
 #   lessons/
 #     lesson_<i>/
+#       lesson-info.json
+#
 #       anki/
 #         lesson_<i>.apkg
 #       source-audio/
