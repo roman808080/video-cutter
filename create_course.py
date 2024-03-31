@@ -12,6 +12,14 @@ LESSON_INFO = 'lesson-info.json'
 DEFAULT_INDENT = 4
 
 
+def dump_file(folder_path, file_name, data, indent=DEFAULT_INDENT):
+    os.makedirs(folder_path, exist_ok=True)
+    info_file_path = os.path.join(folder_path, file_name)
+
+    with open(info_file_path, 'w') as json_file:
+        json.dump(data, json_file, indent=indent)
+
+
 # A structure of a course:
 #
 # course_dir/
@@ -63,11 +71,8 @@ def create_course(course_name, course_path, link=None,
         'sub_courses': [],
     }
 
-    os.makedirs(course_path, exist_ok=True)
-    info_file_path = os.path.join(course_path, COURSE_INFO)
-
-    with open(info_file_path, 'w') as json_file:
-        json.dump(course_structure, json_file, indent=DEFAULT_INDENT)
+    dump_file(folder_path=course_path, file_name=COURSE_INFO,
+              data=course_structure)
 
 
 def create_lesson(lesson_name, lesson_number, source_language,
@@ -97,6 +102,9 @@ def create_lesson(lesson_name, lesson_number, source_language,
         'link': link,
         'sub_lessons': [],
     }
+
+    dump_file(folder_path=lesson_path, file_name=LESSON_INFO,
+              data=lesson_structure)
 
 
 def main():
