@@ -7,7 +7,8 @@ from anki_utlis import generate_id
 
 
 COURSE_INFO = 'course-info.json'
-COURSE_INFO = 'lesson-info.json'
+LESSON_INFO = 'lesson-info.json'
+
 DEFAULT_INDENT = 4
 
 
