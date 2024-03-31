@@ -44,14 +44,15 @@ def remove_file_extension(filename):
     return root
 
 
-def split_video(path_to_video, path_to_subtitles):
+def split_video(path_to_video, path_to_subtitles, output_dir):
     mp3_file = f'{remove_file_extension(path_to_video)}.{MP3_EXTENSION}'
 
     with ensure_file_removal(file_path=mp3_file):
         audio = AudioSegment.from_file(path_to_video)
         audio.export(mp3_file, format=MP3_EXTENSION)
 
-        split_audio(path_to_mp3=mp3_file, path_to_subtitles=path_to_subtitles)
+        split_audio(path_to_mp3=mp3_file, path_to_subtitles=path_to_subtitles,
+                    output_dir=output_dir)
 
 
 def main():
@@ -61,11 +62,16 @@ def main():
 
     parser.add_argument('-v', '--video', help='Path to the video file.', required=True)
     parser.add_argument('-s', '--subtitles', help='Path to the subtitles file.', required=True)
+    parser.add_argument('-p', '--path', help='The output path.', required=True)
 
     # Parse the arguments
     args = parser.parse_args()
 
-    split_video(path_to_video=args.video, path_to_subtitles=args.subtitles)
+    # Make sure that the folder exists
+    os.makedirs(args.path, exist_ok=True)
+
+    split_video(path_to_video=args.video, path_to_subtitles=args.subtitles,
+                output_dir=args.path)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import json
 import logging
 import argparse
@@ -7,7 +8,7 @@ import argparse
 from moviepy.editor import AudioFileClip
 
 
-def split_audio(path_to_mp3, path_to_subtitles):
+def split_audio(path_to_mp3, path_to_subtitles, output_dir):
     # Load subtitles
     with open(path_to_subtitles, 'r') as file:
         subtitles = json.load(file)
@@ -25,7 +26,7 @@ def split_audio(path_to_mp3, path_to_subtitles):
         audio_segment = audio_clip.subclip(start_time, end_time)
         
         # Define the output filename for the segment
-        segment_filename = f'segment_{index+1:03d}.mp3'
+        segment_filename = os.path.join(output_dir, f'segment_{index+1:03d}.mp3')
         
         # Write the audio segment to a file
         audio_segment.write_audiofile(segment_filename, logger=None)  # logger=None to suppress the progress bar
@@ -44,13 +45,23 @@ def main():
     # the video should be first converted to audio by using:
     # ffmpeg -i input_video.mp4 -q:a 0 -map a output_audio.mp3
 
-    parser.add_argument('-a', '--audio', help='Path to the audio file.', required=True)
-    parser.add_argument('-s', '--subtitles', help='Path to the subtitles file.', required=True)
+    parser.add_argument('-a', '--audio',
+                        help='Path to the audio file.',
+                        required=True)
+    parser.add_argument('-s', '--subtitles',
+                        help='Path to the subtitles file.',
+                        required=True)
+    parser.add_argument('-p', '--path',
+                        help='The output path.',
+                        required=True)
 
     # Parse the arguments
     args = parser.parse_args()
 
-    split_audio(path_to_mp3=args.audio, path_to_subtitles=args.subtitles)
+    # Make sure that the folder exists
+    os.makedirs(args.path, exist_ok=True)
+
+    split_audio(path_to_mp3=args.audio, path_to_subtitles=args.subtitles, output_dir=args.path)
 
 
 if __name__ == "__main__":
