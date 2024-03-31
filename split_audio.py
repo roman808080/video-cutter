@@ -34,6 +34,7 @@ def split_audio(path_to_mp3, path_to_subtitles, output_dir):
         logging.info(f"Segment {segment_filename} has been created.")
 
     # Close the original audio clip to release resources
+    # TODO: Add with statement for audio_clip.
     audio_clip.close()
 
 
