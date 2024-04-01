@@ -51,8 +51,18 @@ def split_video(path_to_video, path_to_subtitles, output_dir):
         audio = AudioSegment.from_file(path_to_video)
         audio.export(mp3_file, format=MP3_EXTENSION)
 
-        split_audio(path_to_mp3=mp3_file, path_to_subtitles=path_to_subtitles,
-                    output_dir=output_dir)
+        for index, subtitle, segment_filename in split_audio(path_to_mp3=mp3_file,
+                                                             path_to_subtitles=path_to_subtitles,
+                                                             output_dir=output_dir):
+            yield index, subtitle, segment_filename
+
+
+def split_video_without_generator(path_to_video, path_to_subtitles, output_dir):
+    for index, subtitle, segment_filename in split_video(path_to_video=path_to_video,
+                                                         path_to_subtitles=path_to_subtitles,
+                                                         output_dir=output_dir):
+        logging.info(f'The next chunk was processed: index = {index}, '
+                     f'subtitle={subtitle}, segment={segment_filename}.')
 
 
 def main():
@@ -70,7 +80,7 @@ def main():
     # Make sure that the folder exists
     os.makedirs(args.path, exist_ok=True)
 
-    split_video(path_to_video=args.video, path_to_subtitles=args.subtitles,
+    split_video_without_generator(path_to_video=args.video, path_to_subtitles=args.subtitles,
                 output_dir=args.path)
 
 

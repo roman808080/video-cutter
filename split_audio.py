@@ -27,11 +27,11 @@ def split_audio(path_to_mp3, path_to_subtitles, output_dir):
         
         # Define the output filename for the segment
         segment_filename = os.path.join(output_dir, f'segment_{index+1:03d}.mp3')
-        
+
         # Write the audio segment to a file
         audio_segment.write_audiofile(segment_filename, logger=None)  # logger=None to suppress the progress bar
 
-        logging.info(f"Segment {segment_filename} has been created.")
+        yield index, subtitle, segment_filename
 
     # Close the original audio clip to release resources
     # TODO: Add with statement for audio_clip.
@@ -63,6 +63,11 @@ def main():
     os.makedirs(args.path, exist_ok=True)
 
     split_audio(path_to_mp3=args.audio, path_to_subtitles=args.subtitles, output_dir=args.path)
+
+    for index, subtitle, segment_filename in split_audio(path_to_mp3=args.audio,
+                                                         path_to_subtitles=args.subtiles,
+                                                         output_dir=args.path):
+        pass
 
 
 if __name__ == "__main__":
