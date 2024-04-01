@@ -16,7 +16,7 @@ TEMP_PROCESSING = '.temp'
 
 
 def import_lesson(course_path, video_link,
-                  source_abbreviation, destination_abbreviation):
+                  source_abbreviation, target_abbreviation):
 
     # Getting course_info
     course_info_path = os.path.join(course_path, COURSE_INFO)
@@ -40,7 +40,7 @@ def import_lesson(course_path, video_link,
 
     # Splitting audio
     audio_chunks_path = os.path.join(path, f'{lesson_number}', SOURCE_AUDIO_DIR)
-    path_to_subtitles = downloaded_subtitles[destination_abbreviation]
+    path_to_subtitles = downloaded_subtitles[target_abbreviation]
 
     for index, subtitle, segment_filename in split_video(path_to_video=video_path,
                                                          path_to_subtitles=path_to_subtitles,
