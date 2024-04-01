@@ -27,6 +27,7 @@ def import_lesson(course_path, video_link,
 
     lesson_number = len(course_info['lessons']) + 1
 
+    # TODO: Adding automatic removal for temp_processing_folder
     # Make sure that the folder exists
     temp_processing_folder = os.path.join(path, f'{lesson_number}',
                                           TEMP_PROCESSING)
