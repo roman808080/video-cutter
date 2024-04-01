@@ -115,7 +115,7 @@ def main():
     output_dir = 'youtube_output_dir'
     if args.path is not None:
         output_dir = args.path
-    
+
     # Make sure that the folder exists
     os.makedirs(output_dir, exist_ok=True)
 
