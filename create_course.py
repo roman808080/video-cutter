@@ -43,7 +43,10 @@ def dump_file(folder_path, file_name, data, indent=DEFAULT_INDENT):
 #         phrase_999.mp3
 
 
-def create_course(course_name, course_path, link=None,
+def create_course(course_name, course_path,
+                  source_language,
+                  target_language,
+                  link=None,
                   description=''):
 
     model_id = generate_id()
@@ -52,6 +55,9 @@ def create_course(course_name, course_path, link=None,
     course_structure = {
         'name': course_name,
         'description': description,
+
+        'source_language': source_language,
+        'target_language': target_language,
 
         'lessons': [
             # {
@@ -76,17 +82,13 @@ def create_course(course_name, course_path, link=None,
               data=course_structure)
 
 
-def create_lesson(lesson_name, lesson_number, source_language,
-                  target_language, lesson_path, link=None,
+def create_lesson(lesson_name, lesson_number, lesson_path, link=None,
                   description=''):
 
     lesson_structure = {
         'name': lesson_name,
         'number': number,
         'description': description,
-
-        'source_language': source_language,
-        'target_language': target_language,
 
         'phrases': [
             # {
@@ -114,10 +116,15 @@ def main():
     parser.add_argument('-c', '--course', help='The course name.', required=True)
     parser.add_argument('-p', '--path', help='The path to the course.', required=True)
 
+    parser.add_argument('-s', '--source-language', help='The name of the source language.', required=True)
+    parser.add_argument('-t', '--target-language', help='The name of the target language.', required=True)
+
     # Parse the arguments
     args = parser.parse_args()
 
-    create_course(course_name=args.course, course_path=args.path)
+    create_course(course_name=args.course, course_path=args.path,
+                  source_language=args.source_language,
+                  target_language=args.target_language)
 
 
 if __name__ == "__main__":
