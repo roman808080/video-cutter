@@ -8,6 +8,7 @@ from anki_utlis import generate_id
 
 COURSE_INFO = 'course-info.json'
 LESSON_INFO = 'lesson-info.json'
+SOURCE_AUDIO_DIR = 'source-audio'
 
 DEFAULT_INDENT = 4
 

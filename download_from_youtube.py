@@ -67,17 +67,26 @@ def download_youtube_video(video_url, path):
     stream.download(output_path=path)
     logging.info(f"Video downloaded successfully: {stream.default_filename}")
 
+    # TODO: Make sure that we return mp4 file name, right now,
+    # it is only the name without the extentsion.
+    return os.path.join(path, f'{stream.default_filename}.mp4')
+
 
 def download_subtitles(video_url, path):
     video_id = get_youtube_video_id(url=video_url)
     transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
     video_name = get_video_name(url=video_url)
 
+    downloaded_subtitles = {}
     for transcript in transcript_list:
         youtube_video_name = remove_mp4_suffix(file_name=video_name)
-        file_name = f'{youtube_video_name} ({transcript.language_code}).json'
+
+        language_code = transcript.language_code
+        file_name = f'{youtube_video_name} ({language_code}).json'
+
         if transcript.is_generated:
-            file_name = f'{youtube_video_name} ({transcript.language_code}, gen).json'
+            language_code = f'{transcript.language_code}_gen'
+            file_name = f'{youtube_video_name} ({language_code}).json'
 
         file_path = os.path.join(path, file_name)
 
@@ -89,6 +98,11 @@ def download_subtitles(video_url, path):
             file.write(json_formatted)
 
         logging.info(f'Downloaded {file_path}, amount of lines: {len(text)}')
+
+        # Return downloaded subtitles
+        downloaded_subtitles[language_code] = file_path
+
+    return downloaded_subtitles
 
 
 def main():
