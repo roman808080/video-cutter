@@ -4,3 +4,4 @@ moviepy
 pyqt5
 pyqtwebengine
 pydub
+genanki
