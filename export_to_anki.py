@@ -50,7 +50,11 @@ my_deck = genanki.Deck(
     course_info['name']
 )
 
-# Process each lesson
+output_path = 'output_deck.apkg'
+
+# Collect audio files to be added to the Anki package
+audio_files = []
+
 for lesson in course_info['lessons']:
     lesson_path = os.path.join(os.path.dirname(course_info_path), lesson['path'], 'lesson-info.json')
     
@@ -60,17 +64,24 @@ for lesson in course_info['lessons']:
     
     # Add cards for each phrase in the lesson
     for phrase in lesson_info['phrases']:
+        if phrase['source_audio']:
+            # TODO: Fix source_audio path because currently it is not correct.
+            audio_path = os.path.join(os.path.dirname(lesson_path), os.path.basename(phrase['source_audio']))
+            # Ensure the audio file exists before adding it to the list
+            if os.path.exists(audio_path) and audio_path not in audio_files:
+                audio_files.append(audio_path)
+        
         note = genanki.Note(
             model=my_model,
             fields=[
                 phrase['target'],  # English field
                 phrase['source'],  # Target language field
-                '[sound:{}]'.format(phrase['source_audio']) if phrase['source_audio'] else '',  # Audio field
+                '[sound:{}]'.format(os.path.basename(phrase['source_audio'])) if phrase['source_audio'] else '',  # Audio field
             ]
         )
         my_deck.add_note(note)
 
-# Save the deck to a file
-output_path = 'output_deck.apkg'
-genanki.Package(my_deck).write_to_file(output_path)
+# Package the deck and include the audio files
+genanki.Package(my_deck, media_files=audio_files).write_to_file(output_path)
+
 print(f"Deck created: {output_path}")
