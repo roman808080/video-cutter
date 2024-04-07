@@ -69,7 +69,6 @@ def import_lesson(course_path, video_link,
             # 'name': '<name>',
             # 'source-link': '<link>',
             # 'anki_deck_path': '<path>',
-            # 'audio_config_path': '<path>',
             # 'path': '<path-to-the-lesson>'
         # },
 
@@ -77,7 +76,6 @@ def import_lesson(course_path, video_link,
             'name': video_name,
             'source-link': video_link,
             'anki_deck_path': None,
-            'audio_config_path': None,
             'path': f'{lesson_number}'
         }
 

@@ -65,7 +65,6 @@ def create_course(course_name, course_path,
                 # 'name': '<name>',
                 # 'source-link': '<link>',
                 # 'anki_deck_path': '<path>',
-                # 'audio_config_path': '<path>',
                 # 'path': '<path-to-the-lesson>'
             # },
         ],
