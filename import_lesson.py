@@ -68,14 +68,12 @@ def import_lesson(course_path, video_link,
         # {
             # 'name': '<name>',
             # 'source-link': '<link>',
-            # 'anki_deck_path': '<path>',
             # 'path': '<path-to-the-lesson>'
         # },
 
         lesson = {
             'name': video_name,
             'source-link': video_link,
-            'anki_deck_path': None,
             'path': f'{lesson_number}'
         }
 
