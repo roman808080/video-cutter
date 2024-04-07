@@ -49,7 +49,7 @@ def import_lesson(course_path, video_link,
 
         # Splitting audio
         audio_chunks_path = os.path.join(course_path, f'{lesson_number}', SOURCE_AUDIO_DIR)
-        path_to_subtitles = downloaded_subtitles[target_abbreviation]
+        path_to_subtitles = downloaded_subtitles[source_abbreviation]
 
         # TODO: Adding a comparison between the source and target subtitles.
         # TODO: Get name of the lesson without .mp4 suffix.
@@ -73,7 +73,7 @@ def import_lesson(course_path, video_link,
 
             # TODO: Creating a phrase should be possibly inside the class.
             phrase = {
-                'source': subtitle,
+                'source': subtitle['text'],
                 'target': None,
 
                 'source_audio': segment_filename,
