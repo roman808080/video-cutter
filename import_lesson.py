@@ -9,7 +9,8 @@ import argparse
 from contextlib import contextmanager
 
 from create_course import (COURSE_INFO, LESSON_INFO,
-                           SOURCE_AUDIO_DIR, dump_file)
+                           SOURCE_AUDIO_DIR, dump_file,
+                           create_lesson)
 
 from download_from_youtube import (download_youtube_video,
                                    get_video_name,
@@ -50,7 +51,13 @@ def import_lesson(course_path, video_link,
         audio_chunks_path = os.path.join(course_path, f'{lesson_number}', SOURCE_AUDIO_DIR)
         path_to_subtitles = downloaded_subtitles[target_abbreviation]
 
-        # TODO: Adding a comparison between the source and target subtitles
+        # TODO: Adding a comparison between the source and target subtitles.
+        # TODO: Get name of the lesson without .mp4 suffix.
+
+        create_lesson(lesson_name=video_name, lesson_number=lesson_number,
+                      lesson_path=os.path.join(course_path, f'{lesson_number}'),
+                      link=video_link)
+
         for index, subtitle, segment_filename in split_video(path_to_video=video_path,
                                                             path_to_subtitles=path_to_subtitles,
                                                             output_dir=audio_chunks_path):

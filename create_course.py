@@ -88,7 +88,7 @@ def create_lesson(lesson_name, lesson_number, lesson_path, link=None,
 
     lesson_structure = {
         'name': lesson_name,
-        'number': number,
+        'number': lesson_number,
         'description': description,
 
         'phrases': [
