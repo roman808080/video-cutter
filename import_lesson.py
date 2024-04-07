@@ -10,7 +10,7 @@ from contextlib import contextmanager
 
 from create_course import (COURSE_INFO, LESSON_INFO,
                            SOURCE_AUDIO_DIR, dump_file,
-                           create_lesson)
+                           create_lesson, read_lesson)
 
 from download_from_youtube import (download_youtube_video,
                                    get_video_name,
@@ -53,10 +53,16 @@ def import_lesson(course_path, video_link,
 
         # TODO: Adding a comparison between the source and target subtitles.
         # TODO: Get name of the lesson without .mp4 suffix.
+        # TODO: Create a classes for lessons and courses.
+
+        lesson_path_folder = os.path.join(course_path, f'{lesson_number}')
+        lesson_path = os.path.join(lesson_path_folder, LESSON_INFO)
 
         create_lesson(lesson_name=video_name, lesson_number=lesson_number,
-                      lesson_path=os.path.join(course_path, f'{lesson_number}'),
+                      lesson_path=lesson_path_folder,
                       link=video_link)
+        lesson_structure = read_lesson(lesson_path=lesson_path)
+        phrases = lesson_structure['phrases']
 
         for index, subtitle, segment_filename in split_video(path_to_video=video_path,
                                                             path_to_subtitles=path_to_subtitles,
@@ -64,6 +70,17 @@ def import_lesson(course_path, video_link,
 
             logging.info(f'The next chunk was processed: index = {index}, '
                         f'subtitle={subtitle}, segment={segment_filename}.')
+
+            # TODO: Creating a phrase should be possibly inside the class.
+            phrase = {
+                'source': subtitle,
+                'target': None,
+
+                'source_audio': segment_filename,
+                'target_audio': None,
+                'comment': None,
+            }
+            phrases.append(phrase)
 
         # {
             # 'name': '<name>',
@@ -78,6 +95,10 @@ def import_lesson(course_path, video_link,
         }
 
         course_info['lessons'].append(lesson)
+
+        dump_file(folder_path=lesson_path_folder,
+                  file_name=LESSON_INFO,
+                  data=lesson_structure)
 
         # Dump the course info back
         dump_file(folder_path=course_path,

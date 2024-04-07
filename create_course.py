@@ -13,12 +13,32 @@ SOURCE_AUDIO_DIR = 'source-audio'
 DEFAULT_INDENT = 4
 
 
+# TODO: Rename to have a better name.
+# It should resemble that it reads from json.
+
+# TODO: Move dump_file and read_json_from_file to utils.py
+
 def dump_file(folder_path, file_name, data, indent=DEFAULT_INDENT):
     os.makedirs(folder_path, exist_ok=True)
     info_file_path = os.path.join(folder_path, file_name)
 
     with open(info_file_path, 'w') as json_file:
         json.dump(data, json_file, indent=indent)
+
+
+def read_json_from_file(file_path):
+    """
+    Read JSON data from a file.
+
+    Parameters:
+    - file_path (str): Path to the JSON file.
+
+    Returns:
+    - dict: Parsed JSON data.
+    """
+    with open(file_path, 'r') as file:
+        json_data = json.load(file)
+    return json_data
 
 
 # A structure of a course:
@@ -98,6 +118,10 @@ def create_lesson(lesson_name, lesson_number, lesson_path, link=None,
 
     dump_file(folder_path=lesson_path, file_name=LESSON_INFO,
               data=lesson_structure)
+
+
+def read_lesson(lesson_path):
+    return read_json_from_file(file_path=lesson_path)
 
 
 def main():
