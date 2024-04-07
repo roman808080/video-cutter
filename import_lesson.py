@@ -2,8 +2,11 @@
 
 import os
 import json
+import shutil
+import tempfile
 import logging
 import argparse
+from contextlib import contextmanager
 
 from create_course import (COURSE_INFO, LESSON_INFO,
                            SOURCE_AUDIO_DIR, dump_file)
@@ -15,7 +18,13 @@ from download_from_youtube import (download_youtube_video,
 from split_video import split_video
 
 
-TEMP_PROCESSING = '.temp'
+@contextmanager
+def temp_directory():
+    temp_dir = tempfile.mkdtemp()  # Create a temporary directory
+    try:
+        yield temp_dir  # Provide the temporary directory to the caller
+    finally:
+        shutil.rmtree(temp_dir)  # Clean up the temporary directory when done
 
 
 def import_lesson(course_path, video_link,
@@ -30,52 +39,47 @@ def import_lesson(course_path, video_link,
 
     lesson_number = len(course_info['lessons']) + 1
 
-    # TODO: Adding automatic removal for temp_processing_folder
-    # Make sure that the folder exists
-    temp_processing_folder = os.path.join(course_path, f'{lesson_number}',
-                                          TEMP_PROCESSING)
-    os.makedirs(temp_processing_folder, exist_ok=True)
+    with temp_directory() as temp_processing_folder:
+        video_name = get_video_name(url=video_link)
+        video_path = download_youtube_video(video_url=video_link,
+                                            path=temp_processing_folder)
+        downloaded_subtitles = download_subtitles(video_url=video_link,
+                                                path=temp_processing_folder)
 
-    video_name = get_video_name(url=video_link)
-    video_path = download_youtube_video(video_url=video_link,
-                                        path=temp_processing_folder)
-    downloaded_subtitles = download_subtitles(video_url=video_link,
-                                              path=temp_processing_folder)
+        # Splitting audio
+        audio_chunks_path = os.path.join(course_path, f'{lesson_number}', SOURCE_AUDIO_DIR)
+        path_to_subtitles = downloaded_subtitles[target_abbreviation]
 
-    # Splitting audio
-    audio_chunks_path = os.path.join(course_path, f'{lesson_number}', SOURCE_AUDIO_DIR)
-    path_to_subtitles = downloaded_subtitles[target_abbreviation]
+        # TODO: Adding a comparison between the source and target subtitles
+        for index, subtitle, segment_filename in split_video(path_to_video=video_path,
+                                                            path_to_subtitles=path_to_subtitles,
+                                                            output_dir=audio_chunks_path):
 
-    # TODO: Adding a comparison between the source and target subtitles
-    for index, subtitle, segment_filename in split_video(path_to_video=video_path,
-                                                         path_to_subtitles=path_to_subtitles,
-                                                         output_dir=audio_chunks_path):
+            logging.info(f'The next chunk was processed: index = {index}, '
+                        f'subtitle={subtitle}, segment={segment_filename}.')
 
-        logging.info(f'The next chunk was processed: index = {index}, '
-                     f'subtitle={subtitle}, segment={segment_filename}.')
+        # {
+            # 'name': '<name>',
+            # 'source-link': '<link>',
+            # 'anki_deck_path': '<path>',
+            # 'audio_config_path': '<path>',
+            # 'path': '<path-to-the-lesson>'
+        # },
 
-    # {
-        # 'name': '<name>',
-        # 'source-link': '<link>',
-        # 'anki_deck_path': '<path>',
-        # 'audio_config_path': '<path>',
-        # 'path': '<path-to-the-lesson>'
-    # },
+        lesson = {
+            'name': video_name,
+            'source-link': video_link,
+            'anki_deck_path': None,
+            'audio_config_path': None,
+            'path': f'{lesson_number}'
+        }
 
-    lesson = {
-        'name': video_name,
-        'source-link': video_link,
-        'anki_deck_path': None,
-        'audio_config_path': None,
-        'path': f'{lesson_number}'
-    }
+        course_info['lessons'].append(lesson)
 
-    course_info['lessons'].append(lesson)
-
-    # Dump the course info back
-    dump_file(folder_path=course_path,
-              file_name=COURSE_INFO,
-              data=course_info)
+        # Dump the course info back
+        dump_file(folder_path=course_path,
+                file_name=COURSE_INFO,
+                data=course_info)
 
 
 def main():
