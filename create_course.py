@@ -30,8 +30,6 @@ def dump_file(folder_path, file_name, data, indent=DEFAULT_INDENT):
 #     lesson_<i>/
 #       lesson-info.json
 #
-#       anki/
-#         lesson_<i>.apkg
 #       source-audio/
 #         audio-info.json
 #         segment_001.mp3
@@ -74,7 +72,6 @@ def create_course(course_name, course_path,
         },
 
         'link': link,
-        'sub_courses': [],
     }
 
     dump_file(folder_path=course_path, file_name=COURSE_INFO,
@@ -102,7 +99,6 @@ def create_lesson(lesson_name, lesson_number, lesson_path, link=None,
         ],
 
         'link': link,
-        'sub_lessons': [],
     }
 
     dump_file(folder_path=lesson_path, file_name=LESSON_INFO,
