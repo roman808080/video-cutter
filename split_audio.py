@@ -9,6 +9,9 @@ from moviepy.editor import AudioFileClip
 
 
 def split_audio(path_to_mp3, path_to_subtitles, output_dir):
+    # Make sure that output_dir exists
+    os.makedirs(output_dir, exist_ok=True)
+
     # Load subtitles
     with open(path_to_subtitles, 'r') as file:
         subtitles = json.load(file)

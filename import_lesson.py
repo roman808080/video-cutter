@@ -9,7 +9,10 @@ from create_course import (COURSE_INFO, LESSON_INFO,
                            SOURCE_AUDIO_DIR, dump_file)
 
 from download_from_youtube import (download_youtube_video,
-                                   get_video_name)
+                                   get_video_name,
+                                   download_subtitles)
+
+from split_video import split_video
 
 
 TEMP_PROCESSING = '.temp'
@@ -29,7 +32,7 @@ def import_lesson(course_path, video_link,
 
     # TODO: Adding automatic removal for temp_processing_folder
     # Make sure that the folder exists
-    temp_processing_folder = os.path.join(path, f'{lesson_number}',
+    temp_processing_folder = os.path.join(course_path, f'{lesson_number}',
                                           TEMP_PROCESSING)
     os.makedirs(temp_processing_folder, exist_ok=True)
 
@@ -40,7 +43,7 @@ def import_lesson(course_path, video_link,
                                               path=temp_processing_folder)
 
     # Splitting audio
-    audio_chunks_path = os.path.join(path, f'{lesson_number}', SOURCE_AUDIO_DIR)
+    audio_chunks_path = os.path.join(course_path, f'{lesson_number}', SOURCE_AUDIO_DIR)
     path_to_subtitles = downloaded_subtitles[target_abbreviation]
 
     # TODO: Adding a comparison between the source and target subtitles
@@ -92,6 +95,10 @@ def main():
     args = parser.parse_args()
 
     logging.info(f'{args.course_path} {args.video_link}')
+
+    import_lesson(course_path=args.course_path, video_link=args.video_link,
+                  source_abbreviation=args.source_language,
+                  target_abbreviation=args.target_language)
 
 
 if __name__ == "__main__":

@@ -67,9 +67,7 @@ def download_youtube_video(video_url, path):
     stream.download(output_path=path)
     logging.info(f"Video downloaded successfully: {stream.default_filename}")
 
-    # TODO: Make sure that we return mp4 file name, right now,
-    # it is only the name without the extentsion.
-    return os.path.join(path, f'{stream.default_filename}.mp4')
+    return os.path.join(path, f'{stream.default_filename}')
 
 
 def download_subtitles(video_url, path):
