@@ -35,11 +35,6 @@ def dump_file(folder_path, file_name, data, indent=DEFAULT_INDENT):
 #         segment_001.mp3
 #         ...
 #         segment_999.mp3
-#
-#       processed-audio/
-#         phrase_001.mp3
-#         ...
-#         phrase_999.mp3
 
 
 def create_course(course_name, course_path,
