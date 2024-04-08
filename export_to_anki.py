@@ -66,7 +66,9 @@ for lesson in course_info['lessons']:
     for phrase in lesson_info['phrases']:
         if phrase['source_audio']:
             # TODO: Fix source_audio path because currently it is not correct.
-            audio_path = os.path.join(os.path.dirname(lesson_path), os.path.basename(phrase['source_audio']))
+            audio_path = os.path.join(os.path.dirname(lesson_path), 'source-audio', os.path.basename(phrase['source_audio']))
+            print(audio_path)
+
             # Ensure the audio file exists before adding it to the list
             if os.path.exists(audio_path) and audio_path not in audio_files:
                 audio_files.append(audio_path)
