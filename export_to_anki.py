@@ -65,7 +65,6 @@ for lesson in course_info['lessons']:
     # Add cards for each phrase in the lesson
     for phrase in lesson_info['phrases']:
         if phrase['source_audio']:
-            # TODO: Fix source_audio path because currently it is not correct.
             audio_path = os.path.join(os.path.dirname(lesson_path), 'source-audio', os.path.basename(phrase['source_audio']))
             print(audio_path)
 
@@ -76,6 +75,7 @@ for lesson in course_info['lessons']:
         note = genanki.Note(
             model=my_model,
             fields=[
+                # TODO: source and target subtitles should be swapped.
                 phrase['target'],  # English field
                 phrase['source'],  # Target language field
                 '[sound:{}]'.format(os.path.basename(phrase['source_audio'])) if phrase['source_audio'] else '',  # Audio field

@@ -50,6 +50,7 @@ def import_lesson(course_path, video_link,
 
         # Splitting audio
         audio_chunks_path = os.path.join(course_path, f'{lesson_number}', SOURCE_AUDIO_DIR)
+        # TODO: source and target subtitles should be swapped.
         path_to_source_subtitles = downloaded_subtitles[source_abbreviation]
         path_to_target_subtitles = downloaded_subtitles[target_abbreviation]
 
