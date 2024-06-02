@@ -5,6 +5,7 @@ import json
 import logging
 import argparse
 import pysrt
+from googletrans import Translator
 
 from moviepy.editor import AudioFileClip
 
@@ -37,6 +38,32 @@ def srt_to_json(srt_file_path):
     logging.info(f"Converted {srt_file_path} to {json_file_path}")
 
     return json_file_path
+
+
+# TODO: Move the next function into more logical place
+def translate_subtitles(json_file_path, source_lang='auto', dest_lang='en'):
+    # Create the path for the translated file
+    base, ext = os.path.splitext(json_file_path)
+    translated_file_path = f"{base}_en{ext}"
+    
+    # Initialize the translator
+    translator = Translator()
+    
+    # Read the original subtitles from the JSON file
+    with open(json_file_path, 'r', encoding='utf-8') as json_file:
+        subs_data = json.load(json_file)
+    
+    # Translate each subtitle
+    for sub in subs_data:
+        translated_text = translator.translate(sub["text"], src=source_lang, dest=dest_lang).text
+        sub["text"] = translated_text
+    
+    # Save the translated subtitles to a new JSON file
+    with open(translated_file_path, 'w', encoding='utf-8') as json_file:
+        json.dump(subs_data, json_file, ensure_ascii=False, indent=4)
+    
+    logging.info(f"Translated subtitles saved to: {translated_file_path}")
+    return translated_file_path
 
 
 def split_audio(path_to_mp3, path_to_subtitles, output_dir):
@@ -90,6 +117,9 @@ def main():
     parser.add_argument('-p', '--path',
                         help='The output path.',
                         required=True)
+    parser.add_argument('-l', '--lang',
+                        help='The original lang of the subs.',
+                        required=True)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -98,6 +128,7 @@ def main():
     os.makedirs(args.path, exist_ok=True)
 
     json_subtitles = srt_to_json(srt_file_path=args.subtitles)
+    translate_subtitles(json_file_path=json_subtitles, source_lang='cs')
 
     for index, subtitle, segment_filename in split_audio(path_to_mp3=args.audio,
                                                          path_to_subtitles=json_subtitles,
