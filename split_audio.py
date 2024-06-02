@@ -4,8 +4,39 @@ import os
 import json
 import logging
 import argparse
+import pysrt
 
 from moviepy.editor import AudioFileClip
+
+
+def srt_to_json(srt_file_path):
+    # Replace the .srt extension with .json
+    json_file_path = os.path.splitext(srt_file_path)[0] + '.json'
+    
+    subs = pysrt.open(srt_file_path)
+    subs_data = []
+
+    for sub in subs:
+        # Convert start and end times to seconds
+        start_seconds = sub.start.hours * 3600 + sub.start.minutes * 60 + sub.start.seconds + sub.start.milliseconds / 1000
+        end_seconds = sub.end.hours * 3600 + sub.end.minutes * 60 + sub.end.seconds + sub.end.milliseconds / 1000
+        
+        # Calculate duration
+        duration = end_seconds - start_seconds
+        
+        sub_data = {
+            "start": round(start_seconds, 2),
+            "duration": round(duration, 2),
+            "text": sub.text
+        }
+        subs_data.append(sub_data)
+
+    with open(json_file_path, 'w', encoding='utf-8') as json_file:
+        json.dump(subs_data, json_file, ensure_ascii=False, indent=4)
+
+    logging.info(f"Converted {srt_file_path} to {json_file_path}")
+
+    return json_file_path
 
 
 def split_audio(path_to_mp3, path_to_subtitles, output_dir):
@@ -41,6 +72,7 @@ def split_audio(path_to_mp3, path_to_subtitles, output_dir):
     audio_clip.close()
 
 
+# NOTE: The script was temporary remade to work with srt files
 def main():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -65,10 +97,10 @@ def main():
     # Make sure that the folder exists
     os.makedirs(args.path, exist_ok=True)
 
-    split_audio(path_to_mp3=args.audio, path_to_subtitles=args.subtitles, output_dir=args.path)
+    json_subtitles = srt_to_json(srt_file_path=args.subtitles)
 
     for index, subtitle, segment_filename in split_audio(path_to_mp3=args.audio,
-                                                         path_to_subtitles=args.subtiles,
+                                                         path_to_subtitles=json_subtitles,
                                                          output_dir=args.path):
         pass
 
