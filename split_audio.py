@@ -21,7 +21,7 @@ def srt_to_json(srt_file_path):
         # Convert start and end times to seconds
         start_seconds = sub.start.hours * 3600 + sub.start.minutes * 60 + sub.start.seconds + sub.start.milliseconds / 1000
         end_seconds = sub.end.hours * 3600 + sub.end.minutes * 60 + sub.end.seconds + sub.end.milliseconds / 1000
-        
+
         # Calculate duration
         duration = end_seconds - start_seconds
         
@@ -66,7 +66,7 @@ def translate_subtitles(json_file_path, source_lang='auto', dest_lang='en'):
     return translated_file_path
 
 
-def split_audio(path_to_mp3, path_to_subtitles, output_dir):
+def split_audio(path_to_mp3, path_to_subtitles, output_dir, buffer_time=0.33):
     # Make sure that output_dir exists
     os.makedirs(output_dir, exist_ok=True)
 
@@ -76,13 +76,17 @@ def split_audio(path_to_mp3, path_to_subtitles, output_dir):
 
     # Load the audio file
     audio_clip = AudioFileClip(path_to_mp3)
+    duration = audio_clip.duration
 
     # Process each subtitle entry
     for index, subtitle in enumerate(subtitles):
         # Calculate the end time of the clip
         start_time = subtitle['start']
-        end_time = start_time + subtitle['duration']
-        
+        end_time = start_time + subtitle['duration'] + buffer_time
+        # Make sure that we use proper timing
+        if end_time > duration:
+            end_time = duration
+
         # Extract the specific audio segment
         audio_segment = audio_clip.subclip(start_time, end_time)
         
